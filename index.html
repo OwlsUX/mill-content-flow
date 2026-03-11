@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mill — Content Flow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#f7f5f0;color:#1a1a1a}
+
+/* ── NAV ── */
+.site-nav{position:fixed;top:0;left:0;right:0;z-index:100;background:#fff;border-bottom:1px solid #e8e4de;height:52px;display:flex;align-items:center;padding:0 28px}
+.nav-inner{width:100%;max-width:1200px;margin:0 auto;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:16px}
+.nav-logo{height:18px}
+.nav-center{display:flex;justify-content:center;align-items:center;gap:4px}
+.nav-center-label{font-size:9px;font-weight:700;color:#1a5e3a;letter-spacing:.12em;text-transform:uppercase;margin-right:12px;white-space:nowrap}
+.nav-link{font-size:13px;font-weight:500;color:#444;text-decoration:none;padding:6px 12px;border-radius:6px;transition:all .15s;background:none;border:none;cursor:pointer;font-family:inherit;white-space:nowrap}
+.nav-link:hover{background:#f0f0f0;color:#1a1a1a}
+.nav-link.shop{background:#1a5e3a;color:#fff;font-weight:600;border-radius:100px;padding:7px 16px}
+.nav-link.shop:hover{background:#237a4d}
+
+/* hamburger wrapper */
+.hamburger-wrap{position:relative}
+.hamburger{display:flex;align-items:center;gap:8px;background:none;border:1px solid #e8e4de;border-radius:8px;padding:6px 12px;cursor:pointer;font-family:inherit;font-size:12px;font-weight:600;color:#1a5e3a;letter-spacing:.04em;text-transform:uppercase;transition:all .15s}
+.hamburger:hover{background:#f7f5f0;border-color:#ccc}
+.hamburger-icon{display:flex;flex-direction:column;gap:3px}
+.hamburger-icon span{display:block;width:14px;height:1.5px;background:#1a5e3a;border-radius:1px}
+
+/* dropdown */
+.flow-dropdown{position:absolute;top:calc(100% + 6px);right:0;background:#fff;border:1px solid #e8e4de;border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,.1);padding:8px;min-width:220px;display:none;z-index:200}
+.flow-dropdown.open{display:block}
+.flow-dropdown-label{font-size:9px;font-weight:700;color:#aaa;letter-spacing:.1em;text-transform:uppercase;padding:8px 12px 4px}
+.flow-tab{display:block;width:100%;text-align:left;background:none;border:none;padding:8px 12px;font-size:13px;font-weight:500;color:#555;border-radius:6px;cursor:pointer;font-family:inherit;transition:all .12s}
+.flow-tab:hover{background:#f7f5f0;color:#1a1a1a}
+.flow-tab.active{background:#eaf4ef;color:#1a5e3a;font-weight:700}
+
+/* ── CONTENT AREA ── */
+.page-content{display:none;padding-top:76px;min-height:100vh;padding-bottom:80px}
+.page-content.active{display:block}
+
+/* page header */
+.page-header{max-width:680px;margin:0 auto;padding:32px 32px 24px;text-align:center}
+.page-badge{display:inline-flex;align-items:center;gap:6px;background:#eaf4ef;color:#1a5e3a;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:100px;margin-bottom:10px}
+.page-title{font-size:24px;font-weight:800;color:#1a1a1a;letter-spacing:-.02em;margin-bottom:6px}
+.page-meta{font-size:13px;color:#888;line-height:1.6;max-width:480px;margin:0 auto}
+
+/* ── SECTION BLOCKS ── */
+.sections-wrap{max-width:680px;margin:0 auto;padding:0 32px}
+
+.sec-block{background:#fff;border:1px solid #e8e4de;border-radius:10px;padding:32px;margin-bottom:16px}
+.sec-block.is-cta{border-left:3px solid #1a5e3a;background:#f8fcf9}
+
+/* section header */
+.sec-header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid #f0ede8}
+.sec-name{font-size:15px;font-weight:700;color:#1a1a1a}
+.sec-num{font-size:11px;font-weight:600;color:#bbb}
+
+/* section rows */
+.sec-row{margin-bottom:16px}
+.sec-row:last-child{margin-bottom:0}
+.sec-row-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#1a5e3a;margin-bottom:4px}
+.sec-row-content{font-size:14px;line-height:1.65;color:#555}
+.sec-row-content em{color:#1a1a1a;font-style:normal;font-weight:600}
+.sec-row-content strong{color:#1a1a1a}
+
+/* headline example styling */
+.example-hl{font-size:20px;font-weight:800;color:#1a1a1a;letter-spacing:-.02em;line-height:1.25;margin:2px 0 4px}
+
+/* media placeholder */
+.media-note{background:#f7f5f0;border:1px dashed #ddd8d0;border-radius:8px;padding:12px 16px;font-size:12px;color:#999;font-style:italic;line-height:1.5}
+
+/* flow note */
+.flow-note{font-size:12px;color:#999;line-height:1.55;padding-top:12px;border-top:1px solid #f0ede8;margin-top:16px}
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav class="site-nav">
+  <div class="nav-inner">
+    <img class="nav-logo" src="https://a-us.storyblok.com/f/1019164/53x36/9501e3aa21/mill-new-green.svg" alt="Mill" height="18">
+    <div class="nav-center">
+      <span class="nav-center-label">Proposed Nav</span>
+      <button class="nav-link shop">Shop Mill</button>
+      <button class="nav-link">How It Works</button>
+      <button class="nav-link">Food Grounds</button>
+      <button class="nav-link">Commercial</button>
+      <button class="nav-link">Blog</button>
+    </div>
+    <div class="hamburger-wrap">
+      <button class="hamburger" id="flowToggle">
+        <div class="hamburger-icon"><span></span><span></span><span></span></div>
+        Pages
+      </button>
+      <div class="flow-dropdown" id="flowDropdown">
+        <div class="flow-dropdown-label">Content Flow</div>
+        <button class="flow-tab active" data-page="lander">01 · Lander</button>
+        <button class="flow-tab" data-page="homepage">02 · Homepage</button>
+        <button class="flow-tab" data-page="how-it-works">03 · How It Works</button>
+        <button class="flow-tab" data-page="food-grounds">04 · Food Grounds</button>
+        <button class="flow-tab" data-page="pdp">05 · PDP</button>
+        <button class="flow-tab" data-page="configurator">06 · Configurator</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- LANDER -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="page-content active" id="lander">
+
+<div class="page-header">
+  <div class="page-badge">01 · Paid / Meta Traffic</div>
+  <h1 class="page-title">Landing Page</h1>
+  <p class="page-meta">Cold ad-click traffic. Zero context. Self-contained conversion — hook, prove, close in a single scroll. No nav, no leaks.</p>
+</div>
+
+<div class="sections-wrap">
+
+<!-- 1 · HERO -->
+<div class="sec-block">
+  <div class="sec-header">
+    <div class="sec-name">Hero</div>
+    <div class="sec-num">01 / 12</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Purpose</div>
+    <div class="sec-row-content">Stop the scroll. Earn the next 30 seconds. Match the energy of whatever ad brought them here.</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Headline</div>
+    <div class="example-hl">Toss in tonight's scraps. Wake up to clean grounds.</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Supporting Copy</div>
+    <div class="sec-row-content">Mill is an automatic food recycler. Toss in scraps — meat, bones, dairy, anything — and wake up to dry, odor-free grounds you can use in your garden. No smell, no flies, no weekly trash runs.</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">CTA</div>
+    <div class="sec-row-content"><em>Shop Mill — from $33/mo</em> · Trust line: ★ 4.8 from 3,000+ verified reviews · Free shipping</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Media</div>
+    <div class="media-note">Full-bleed autoplay video — food scraps dropping into bin, lid closes, silence. Continues the creative from the ad they just watched.</div>
+  </div>
+  <div class="flow-note">First thing they see. Must continue the pattern from the ad creative so the transition feels seamless, not jarring.</div>
+</div>
+
+<!-- 2 · PROBLEM AGITATION -->
+<div class="sec-block">
+  <div class="sec-header">
+    <div class="sec-name">Problem Agitation</div>
+    <div class="sec-num">02 / 12</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Purpose</div>
+    <div class="sec-row-content">Make the problem feel expensive and personal. No felt problem = no motivation to buy.</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Headline</div>
+    <div class="example-hl">You're throwing away $1,800 a year in groceries.</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Supporting Copy</div>
+    <div class="sec-row-content">It rots. It reeks. It goes to a landfill where it produces methane for decades. And you're stuck dealing with fruit flies, leaking trash bags twice a week, and the guilt of tossing food you meant to eat.</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Media</div>
+    <div class="media-note">Dim, visceral image — overflowing kitchen trash, leaking bag, fruit flies. Not aspirational. This should sting.</div>
+  </div>
+  <div class="flow-note">Creates the emotional wedge before the product reveal. The worse this feels, the better Mill looks in the next section.</div>
+</div>
+
+<!-- 3 · PRODUCT REVEAL -->
+<div class="sec-block">
+  <div class="sec-header">
+    <div class="sec-name">Product Reveal — "Meet Mill"</div>
+    <div class="sec-num">03 / 12</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Purpose</div>
+    <div class="sec-row-content">Position Mill as a new category — not a gadget, not a composter, not something they've seen before.</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Headline</div>
+    <div class="example-hl">A kitchen appliance that turns food waste into garden-ready grounds.</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Supporting Copy</div>
+    <div class="sec-row-content">Think of it like a dishwasher for your food scraps. Drop in anything — meat, dairy, bones, coffee grounds — close the lid, and Mill does the rest overnight. You wake up to dry, odor-free grounds instead of a rotting trash bag.</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Media</div>
+    <div class="media-note">Full beauty shot — Mill in a premium kitchen, morning light, clean countertop. Product-as-hero. This is the first time they see it.</div>
+  </div>
+  <div class="flow-note">Problem just established = max receptivity. Lead with what it's NOT to neutralize competitor comparisons before they form.</div>
+</div>
+
+<!-- 4 · HOW IT WORKS -->
+<div class="sec-block">
+  <div class="sec-header">
+    <div class="sec-name">How It Works</div>
+    <div class="sec-num">04 / 12</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Purpose</div>
+    <div class="sec-row-content">Kill "is this complicated?" before it's asked. Three steps, not a manual.</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Headline</div>
+    <div class="example-hl">How Mill works: toss, sleep, done.</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Copy — Step 1</div>
+    <div class="sec-row-content"><em>Toss it in.</em> Chicken bones, avocado pits, last night's leftovers — everything your trash can handles, Mill handles better.</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Copy — Step 2</div>
+    <div class="sec-row-content"><em>Go to bed.</em> Mill runs overnight. Smart sensors manage the cycle automatically. Quiet enough for the bedroom down the hall — 41 dB.</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Copy — Step 3</div>
+    <div class="sec-row-content"><em>Use the grounds.</em> Nutrient-rich food grounds for your garden, your compost, or your community. 80% less volume than what went in.</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Media</div>
+    <div class="media-note">Three animated/illustrated cards or short looping clips — one per step. Keep it visual and fast.</div>
+  </div>
+  <div class="flow-note">After the reveal, the brain asks "how?" — answer with 3 steps to eliminate complexity anxiety instantly.</div>
+</div>
+
+<!-- 5 · BENEFITS DEEP-DIVE -->
+<div class="sec-block">
+  <div class="sec-header">
+    <div class="sec-name">Benefits Deep-Dive</div>
+    <div class="sec-num">05 / 12</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Purpose</div>
+    <div class="sec-row-content">Counter the 4 silent objections every buyer carries: smell, capacity, hassle, noise. Each benefit is a direct answer.</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Headline</div>
+    <div class="example-hl">No smell. No maintenance. No compromise.</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Benefit 1</div>
+    <div class="sec-row-content"><em>Zero odor. Guaranteed.</em> — Coconut-shell carbon filter captures 99.9% of odors. One replacement per year. Your kitchen smells like your kitchen — not your trash.</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Benefit 2</div>
+    <div class="sec-row-content"><em>Takes almost anything.</em> — Meat. Fish. Bones. Avocado pits. Dairy. Cooked or raw. Everything in your trash except the bag.</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Benefit 3</div>
+    <div class="sec-row-content"><em>Empty it once a month.</em> — 80% volume reduction. Weeks between empties, not days. No more hauling bags to the curb.</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Benefit 4</div>
+    <div class="sec-row-content"><em>Completely runs itself.</em> — No buttons, no timing, no babysitting. Whisper-quiet at 41 dB. You'll forget it's on.</div>
+  </div>
+  <div class="flow-note">Sequence matters: smell → capacity → hassle → automation. Addresses objections in the order people think of them.</div>
+</div>
+
+<!-- 6 · MID-PAGE CTA -->
+<div class="sec-block is-cta">
+  <div class="sec-header">
+    <div class="sec-name">Mid-Page CTA</div>
+    <div class="sec-num">06 / 12</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Purpose</div>
+    <div class="sec-row-content">Capture visitors who are already sold by benefits alone. Don't make them scroll further.</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">CTA</div>
+    <div class="sec-row-content"><em>Shop Mill — from $33/mo</em></div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Supporting</div>
+    <div class="sec-row-content">Join 3,000+ households that already made the switch. Free shipping · 90-day money-back guarantee · 3-year warranty.</div>
+  </div>
+</div>
+
+<!-- 7 · SOCIAL PROOF -->
+<div class="sec-block">
+  <div class="sec-header">
+    <div class="sec-name">Social Proof</div>
+    <div class="sec-num">07 / 12</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Purpose</div>
+    <div class="sec-row-content">Let other people close the sale. Peer validation locks in what the visitor is already starting to believe.</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Headline</div>
+    <div class="example-hl">3,041 verified buyers. 4.8 stars.</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Example Reviews</div>
+    <div class="sec-row-content">
+      "I haven't thought about my trash in six weeks."<br>
+      "We got rid of our outdoor compost bin entirely."<br>
+      "My husband was skeptical. He now tells everyone about it."
+    </div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Press</div>
+    <div class="sec-row-content">Logo strip — WIRED · Fast Company · TIME · WSJ · Food & Wine</div>
+  </div>
+  <div class="flow-note">Appears after benefits when desire is highest. Reviews should feel real, specific, and from people like the visitor.</div>
+</div>
+
+<!-- 8 · LIFESTYLE GALLERY -->
+<div class="sec-block">
+  <div class="sec-header">
+    <div class="sec-name">Lifestyle Gallery</div>
+    <div class="sec-num">08 / 12</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Purpose</div>
+    <div class="sec-row-content">Shift from "evaluating a product" to "imagining owning it." Answer "would this fit in my kitchen?" visually.</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Headline</div>
+    <div class="example-hl">Three finishes. Replaces the bin under your counter.</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Media</div>
+    <div class="media-note">Horizontal scroll — 4 real kitchen environments: modern white, warm Scandinavian, dark contemporary, bright open-plan. Mill in White, Black, and Stainless finishes. Real homes, not studios. Optional color chips.</div>
+  </div>
+  <div class="flow-note">Visual aspiration section. No hard sell — just let the visitor picture it in their space.</div>
+</div>
+
+<!-- 9 · COMPARISON TABLE -->
+<div class="sec-block">
+  <div class="sec-header">
+    <div class="sec-name">Comparison Table</div>
+    <div class="sec-num">09 / 12</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Purpose</div>
+    <div class="sec-row-content">Win the tabs they already have open. Put the comparison on your page, on your terms, before they leave for a competitor review.</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Headline</div>
+    <div class="example-hl">Mill vs. composting vs. doing nothing.</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Table</div>
+    <div class="sec-row-content">Mill vs. Curbside Compost vs. Countertop Composter vs. Doing Nothing. Rows: <em>Zero odor · Handles meat & dairy · No weekly maintenance · 80%+ volume reduction · Tracks impact.</em> Mill checks every row. Others don't.</div>
+  </div>
+  <div class="flow-note">Visitors are mentally comparison-shopping right now. Control the narrative here or lose them to a Reddit thread.</div>
+</div>
+
+<!-- 10 · MID-PAGE CTA 2 -->
+<div class="sec-block is-cta">
+  <div class="sec-header">
+    <div class="sec-name">Mid-Page CTA</div>
+    <div class="sec-num">10 / 12</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Purpose</div>
+    <div class="sec-row-content">Capture visitors convinced by the rational case — proof, reviews, and comparison are done.</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">CTA</div>
+    <div class="sec-row-content"><em>Shop Mill — from $33/mo</em> · Or buy outright from $999 · Finance from $83/mo with Affirm</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Supporting</div>
+    <div class="sec-row-content">Try Mill risk-free for 90 days. Don't love it? Full refund. No questions asked.</div>
+  </div>
+</div>
+
+<!-- 11 · SUSTAINABILITY / IMPACT -->
+<div class="sec-block">
+  <div class="sec-header">
+    <div class="sec-name">Sustainability / Impact</div>
+    <div class="sec-num">11 / 12</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Purpose</div>
+    <div class="sec-row-content">Give buyers the story they'll tell at dinner. After rational proof, this is the emotional "why it matters" layer — the permission slip to spend.</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Headline</div>
+    <div class="example-hl">18,000,000 lbs of food kept out of landfills.</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Supporting Copy</div>
+    <div class="sec-row-content">Food waste in landfills is one of the largest sources of methane on Earth. Mill owners have collectively prevented the equivalent of 12,000 cars' worth of annual emissions — and that number grows every night.</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Media</div>
+    <div class="media-note">Large animated counter if possible. Big bold number — this section is about scale and collective impact.</div>
+  </div>
+  <div class="flow-note">Buyers want to feel good about what they're buying. This gives them the moral justification to go from "want" to "buy."</div>
+</div>
+
+<!-- 12 · PRICING & OPTIONS -->
+<div class="sec-block">
+  <div class="sec-header">
+    <div class="sec-name">Pricing & Options</div>
+    <div class="sec-num">12 / 12</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Purpose</div>
+    <div class="sec-row-content">Make the price feel obvious, not expensive. Shown after 11 sections of value so price is evaluated against everything they've learned — not in isolation.</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Headline</div>
+    <div class="example-hl">Pick the plan that works for you.</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Option 1</div>
+    <div class="sec-row-content"><em>Buy outright — $999.</em> Yours forever. 3-year warranty. No subscription, no strings.</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Option 2 (Featured)</div>
+    <div class="sec-row-content"><em>Monthly — $35/mo.</em> Includes filter replacements + priority support. Cancel anytime.</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Option 3</div>
+    <div class="sec-row-content"><em>Finance — $83/mo.</em> 12 months, 0% APR with Affirm. Same product, same warranty.</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Pull Quote</div>
+    <div class="sec-row-content">"$35 a month. I used to spend more than that on the groceries I threw away."</div>
+  </div>
+  <div class="flow-note">All three options include free shipping + 90-day returns. The $35/mo option should be visually featured — it's the lowest-friction entry point.</div>
+</div>
+
+<!-- FAQ -->
+<div class="sec-block">
+  <div class="sec-header">
+    <div class="sec-name">FAQ</div>
+    <div class="sec-num">—</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Purpose</div>
+    <div class="sec-row-content">Clear the final "but what about..." blockers. 90%-sold visitors have one lingering doubt — this is the last checkpoint before the closing CTA.</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Questions (in frequency order)</div>
+    <div class="sec-row-content">
+      <em>Does it smell?</em> — No. Sealed bucket + carbon filter. 99.9% odor capture. Most owners forget it's running.<br><br>
+      <em>How loud is it?</em> — 41 dB. Quieter than a fridge. Can't hear it from the next room.<br><br>
+      <em>What can't go in?</em> — No liquids, plastic, or packaging. Everything else goes in.<br><br>
+      <em>How much electricity?</em> — About the same as a night light.<br><br>
+      <em>What do I do with the grounds?</em> — Garden, compost, chickens, or community. Packed with nutrients.<br><br>
+      <em>What if I don't love it?</em> — Full refund within 90 days. No restocking fee. We cover return shipping.
+    </div>
+  </div>
+  <div class="flow-note">Accordion format. Each answer 2–3 sentences max. Direct and reassuring, no fluff.</div>
+</div>
+
+<!-- CLOSING CTA -->
+<div class="sec-block is-cta">
+  <div class="sec-header">
+    <div class="sec-name">Closing CTA</div>
+    <div class="sec-num">—</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Purpose</div>
+    <div class="sec-row-content">Convert the highest-intent visitor on the page. Everyone who scrolled this far is close — remove all friction.</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Headline</div>
+    <div class="example-hl">Recycle your food scraps starting tonight.</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Elements</div>
+    <div class="sec-row-content">Color selector (White · Black · Stainless) · CTA: <em>Shop Mill — from $33/mo</em> · 90-day money back · Free shipping · 3-year warranty</div>
+  </div>
+  <div class="sec-row">
+    <div class="sec-row-label">Media</div>
+    <div class="media-note">Full-width dark or green background. Product shot with all three finishes. This should feel like a finish line — clean, confident, final.</div>
+  </div>
+</div>
+
+</div><!-- /sections-wrap -->
+</div><!-- /lander -->
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- HOMEPAGE -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="page-content" id="homepage">
+
+<div class="page-header">
+  <div class="page-badge">02 · Organic / Brand Traffic</div>
+  <h1 class="page-title">Homepage</h1>
+  <p class="page-meta">Mix of branded search, returning visitors, and word-of-mouth referrals. Build brand desire + route to PDP or configurator. Not the conversion page — the brand immersion page.</p>
+</div>
+
+<div class="sections-wrap">
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Hero</div><div class="sec-num">01 / 14</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Establish premium brand tone. Must feel different — not a product listing, a brand statement. Returning visitors need re-engagement.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Headline</div><div class="example-hl">Your food deserves better than a landfill.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Supporting Copy</div><div class="sec-row-content">Mill is an automatic food recycler. Toss in your scraps, close the lid, and wake up to dry, odor-free grounds for your garden — not a rotting bag for the curb.</div></div>
+  <div class="sec-row"><div class="sec-row-label">CTA</div><div class="sec-row-content"><em>Shop Mill</em></div></div>
+  <div class="sec-row"><div class="sec-row-label">Media</div><div class="media-note">Cinematic autoplay video — Mill in a premium kitchen. Show the product clearly — what it looks like, where it sits. This is the first time many visitors will see it.</div></div>
+  <div class="flow-note">Homepage hero must immediately answer "what is this?" for new visitors. Returning visitors already know — they'll scan past to the CTA.</div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Press Social Proof</div><div class="sec-num">02 / 14</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Instant credibility for new organic visitors. Third-party validation before anything else.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">"As Seen In" logo bar: WIRED, Fast Company, TIME, WSJ, Food & Wine. One pullout quote from a top publication.</div></div>
+  <div class="flow-note">New organic visitors need this signal immediately. Returning visitors skip past it — that's fine. Lightweight, non-intrusive.</div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Problem Agitation</div><div class="sec-num">03 / 14</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Make food waste feel personal. Even on the homepage, you need the problem frame — but keep it shorter than the lander.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Headline</div><div class="example-hl">$1,800 a year. Rotting in your trash can.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Supporting Copy</div><div class="sec-row-content">Smelly trash, fruit flies, guilt. 2–3 lines max with a supporting stat or visual. Some visitors already know the problem — don't belabor it.</div></div>
+  <div class="flow-note">Shorter than the lander version. Just enough to set the emotional frame for visitors who are new to the problem.</div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Product Intro — "Meet Mill"</div><div class="sec-num">04 / 14</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Reveal the solution. Frame Mill as a premium appliance, not a gadget. Route to PDP for depth.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Headline</div><div class="example-hl">An automatic food recycler for your kitchen counter.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Supporting Copy</div><div class="sec-row-content">Mill sits where your trash can used to. Drop in food scraps — including meat, bones, and dairy — and it dries and grinds them overnight into nutrient-rich grounds. No odor, no flies, no trips to the curb.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Media</div><div class="media-note">Product beauty shot — hero product image. Premium kitchen context.</div></div>
+  <div class="flow-note">Solution reveal right after the problem. Homepage version is lighter — CTA links to PDP for deep product proof.</div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">How It Works</div><div class="sec-num">05 / 14</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Build understanding in 10 seconds. Simpler than the lander version, with a "Learn more" link to PDP.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Headline</div><div class="example-hl">Three steps. No thinking required.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Steps</div><div class="sec-row-content"><em>Drop in food scraps → Mill dries and grinds them overnight → Empty it once a month.</em> Lifestyle imagery for each step.</div></div>
+  <div class="flow-note">Quick comprehension — not the full deep dive. "Learn more" link routes to the How It Works page or PDP.</div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Durability & Heritage</div><div class="sec-num">06 / 14</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Justify premium price via craft story. Homepage is the right place for brand storytelling — PDP covers specs in detail.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Headline</div><div class="example-hl">Built by the team behind Nest. Made to last 10 years.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Supporting Copy</div><div class="sec-row-content">288 lbs of crushing force. Handcrafted in North America. Engineered by the people who built the Nest thermostat. This isn't a kitchen gadget — it's an appliance with a 3-year warranty and a decade-long lifespan.</div></div>
+  <div class="flow-note">Premium provenance story. The PDP covers technical specs in detail — this is the emotional quality proof.</div>
+</div>
+
+<div class="sec-block is-cta">
+  <div class="sec-header"><div class="sec-name">Mid-Page CTA</div><div class="sec-num">— </div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Capture early converters. Don't make interested visitors scroll to the bottom.</div></div>
+  <div class="sec-row"><div class="sec-row-label">CTA</div><div class="sec-row-content"><em>Configure Your Mill</em> + starting price</div></div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Social Proof Mosaic</div><div class="sec-num">07 / 14</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Emotional proof from real people. Variety of proof types feels organic and authentic vs. a single review slider.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">Mixed media grid: customer video testimonials, pull-quotes, review aggregate (4.8 / 3,000+), celebrity endorsement (Julia Louis-Dreyfus), Fast Company award badge.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Media</div><div class="media-note">Mixed media grid — videos, quotes, badges. Not a carousel. A mosaic that feels organic and browsable.</div></div>
+  <div class="flow-note">Most powerful social proof format — multiple proof types in one section. Feels real vs. a curated testimonial slider.</div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Food Grounds / Impact</div><div class="sec-num">08 / 14</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Show what happens after — extend the value prop beyond "less trash" into a positive outcome story. Also serves as internal navigation.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">3 cards: <em>Mill for your garden · Mill for your chickens · Mill for your community.</em> Each links to a dedicated page.</div></div>
+  <div class="flow-note">Expands the value proposition from "less trash" to "creates something useful." Bridges to the Food Grounds page.</div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Lifestyle / Color Gallery</div><div class="sec-num">09 / 14</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Aspiration + product range showcase. Ownership fantasy + visual proof it fits any kitchen.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Headline</div><div class="example-hl">Three finishes. Fits where your trash can used to.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Media</div><div class="media-note">Photo gallery — Mill in different kitchens + interactive color selector (Black, White, Stainless Steel).</div></div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Product CTA Card</div><div class="sec-num">10 / 14</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Convert mid-funnel visitors. Clear conversion point with all trust signals consolidated.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">Product card with thumbnail, price, "Buy, finance, or rent" + trust badges (90-day guarantee, free shipping, 3-year warranty). <em>Order now</em> button.</div></div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Customer Reviews</div><div class="sec-num">11 / 14</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Deep social proof for serious evaluators. Returning visitors and researchers want to read real reviews — give them a full feed.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">Full review feed (Yotpo-style): star breakdown, verified buyer badges, timestamps. Searchable and filterable.</div></div>
+  <div class="flow-note">Serves the deep-research need. Different from the mosaic above — this is the "let me read 20 reviews" section.</div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Blog / Latest Stories</div><div class="sec-num">12 / 14</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">SEO + content depth + returning visitor engagement. Shows the brand has an active community.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">3 recent blog post cards with lifestyle imagery. "View all" link.</div></div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Impact Statement</div><div class="sec-num">13 / 14</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Inspire + close with purpose. The big number creates social proof of scale.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Headline</div><div class="example-hl">Mill owners have kept 18,000,000 lbs of food out of landfills.</div></div>
+  <div class="sec-row"><div class="sec-row-label">CTA</div><div class="sec-row-content"><em>Shop Mill</em></div></div>
+  <div class="sec-row"><div class="sec-row-label">Media</div><div class="media-note">Large typographic counter. Big bold number — this section is about scale and collective impact.</div></div>
+  <div class="flow-note">Emotional close. The number does the selling.</div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Newsletter + Footer</div><div class="sec-num">14 / 14</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Last-resort capture for visitors who didn't convert but are interested enough to subscribe.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">"Stay in the loop" email signup + full sitemap footer with Discover, About, Support, and Social links.</div></div>
+</div>
+
+</div></div><!-- /homepage -->
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- HOW IT WORKS -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="page-content" id="how-it-works">
+
+<div class="page-header">
+  <div class="page-badge">03 · Mid-Funnel / Organic</div>
+  <h1 class="page-title">How It Works</h1>
+  <p class="page-meta">Mid-funnel visitors who've heard of Mill but aren't ready to shop. Organic search traffic. Nav-clickers who want to understand before buying. Educate, build confidence, route to Shop or PDP.</p>
+</div>
+
+<div class="sections-wrap">
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Hero</div><div class="sec-num">01 / 08</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Frame the problem + introduce the solution. Open with the problem to create context for the explanation that follows.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Headline</div><div class="example-hl">$1,800 of groceries go in your trash every year. Mill puts them back to work.</div></div>
+  <div class="sec-row"><div class="sec-row-label">CTA</div><div class="sec-row-content"><em>Shop Mill</em></div></div>
+  <div class="sec-row"><div class="sec-row-label">Media</div><div class="media-note">Product beauty shot. Clean, simple. Not the cinematic homepage hero — more informational and direct.</div></div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">3-Step Process</div><div class="sec-num">02 / 08</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Prove simplicity. This is the centerpiece of the entire page. If visitors remember one thing, it's this 3-step flow.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Step 1</div><div class="sec-row-content"><em>Toss it in.</em> Anything from peels to bones. No sorting, no prep.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Step 2</div><div class="sec-row-content"><em>Mill works overnight.</em> Smart sensors, fully automatic, whisper quiet at 41 dB.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Step 3</div><div class="sec-row-content"><em>Use your grounds.</em> Nutrient-rich food grounds for your garden, chickens, or community.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Media</div><div class="media-note">Video or animation for each step. This is the page — invest in the media here.</div></div>
+  <div class="flow-note">The centerpiece. Everything else on this page supports these three steps.</div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">What Goes In</div><div class="sec-num">03 / 08</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Kill "but can I put ____?" doubt. Visitors need to know this handles their specific food waste.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">Visual grid: fruits & veggies, meat & fish, dairy, bones, pits, plate scrapings. Short — not PDP depth.</div></div>
+  <div class="flow-note">Directly supports Step 1. Keep it scannable — the PDP has the full breakdown.</div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">The Technology</div><div class="sec-num">04 / 08</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">"How It Works" visitors want to understand how. Give them the impressive stats without the full PDP accordion.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">3–4 highlight blocks: <em>288 lbs of force</em> (auger power) · <em>99.9% odor removal</em> (carbon filter) · <em>41 dB</em> (whisper quiet) · <em>Smart sensors</em> (adaptive cycles).</div></div>
+  <div class="sec-row"><div class="sec-row-label">Media</div><div class="media-note">Optional short explainer video of internals. Or illustrated tech callouts — not a full spec sheet.</div></div>
+  <div class="flow-note">This is the "impressive stats" section — enough to build confidence without overwhelming. Full engineering deep-dive lives on the PDP.</div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">The Output — Food Grounds</div><div class="sec-num">05 / 08</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Answer "what do I get?" Completes the story — scraps go in, a resource comes out.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">Intro to food grounds: shelf-stable, nutrient-rich, pest-free. 3 use-case cards: <em>Garden · Chickens · Community</em> — each linking to the Food Grounds page.</div></div>
+  <div class="flow-note">Bridges to the Food Grounds page for visitors who want more depth on the output story.</div>
+</div>
+
+<div class="sec-block is-cta">
+  <div class="sec-header"><div class="sec-name">Mid-Page CTA</div><div class="sec-num">—</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Capture mid-funnel converters. Don't make convinced visitors scroll to the bottom.</div></div>
+  <div class="sec-row"><div class="sec-row-label">CTA</div><div class="sec-row-content"><em>Shop Mill</em> + "Starting at $999" + trust badges</div></div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Social Proof</div><div class="sec-num">06 / 08</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Validate everything they just learned. Third-party proof after the explanation confirms "this is real and people love it."</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">Press logos (WIRED, Fast Company, WSJ) + star rating (4.8 / 3,000+) + 2–3 short pull-quotes.</div></div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Durability & Heritage</div><div class="sec-num">07 / 08</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">For visitors now wondering "is this well-made?" A quick quality proof.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Headline</div><div class="example-hl">Handcrafted in North America. 3-year warranty.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Supporting Copy</div><div class="sec-row-content">Built by the team behind Nest. Steel enclosure, industrial augers, 288 lbs of grinding force. Designed to run every night for a decade.</div></div>
+</div>
+
+<div class="sec-block is-cta">
+  <div class="sec-header"><div class="sec-name">Closing CTA</div><div class="sec-num">08 / 08</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Route to action. Give two clear exits — buy or learn more. No dead ends.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Primary CTA</div><div class="sec-row-content"><em>Shop Mill</em> → Configurator</div></div>
+  <div class="sec-row"><div class="sec-row-label">Secondary CTA</div><div class="sec-row-content"><em>See full details</em> → PDP (for visitors who want deeper specs before buying)</div></div>
+</div>
+
+</div></div><!-- /how-it-works -->
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- FOOD GROUNDS -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="page-content" id="food-grounds">
+
+<div class="page-header">
+  <div class="page-badge">04 · Education / Organic</div>
+  <h1 class="page-title">Food Grounds</h1>
+  <p class="page-meta">Visitors from nav, PDP, or homepage cards. Organic search for "what are food grounds." Explain what they are, show how to use them, connect to sustainability, drive back to purchase.</p>
+</div>
+
+<div class="sections-wrap">
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Hero</div><div class="sec-num">01 / 08</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Establish what food grounds are. Frame them as a positive output, not a byproduct.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Headline</div><div class="example-hl">Last night's dinner scraps. This morning's garden food.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Supporting Copy</div><div class="sec-row-content">Mill dries and grinds your food scraps into something called Food Grounds — a dry, nutrient-rich material you can use in your garden, compost, or community pickup program.</div></div>
+  <div class="sec-row"><div class="sec-row-label">CTA</div><div class="sec-row-content"><em>Shop Mill</em></div></div>
+  <div class="sec-row"><div class="sec-row-label">Media</div><div class="media-note">Large visual of food grounds — close-up texture shot. Should look natural, earthy, appealing.</div></div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">The Transformation</div><div class="sec-num">02 / 08</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Show the process from scrap to grounds. Visitors need to understand what happens inside Mill before they care about the output.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">3-step timeline: <em>Today</em> → Drop in food scraps. <em>Next day</em> → Mill transforms them overnight (destroys pathogens, conserves nutrients). <em>Next week</em> → A full bucket of shelf-stable grounds.</div></div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Properties & Benefits</div><div class="sec-num">03 / 08</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Prove grounds are useful, not just "dried food." Specific, practical benefits that differentiate from compost or mulch.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">4 quick benefits: <em>No fruit flies or pests · Compact and dry · Ready in hours · Store for months.</em></div></div>
+  <div class="sec-row"><div class="sec-row-label">Media</div><div class="media-note">Circular product shot of grounds — clean, close-up, editorial feel.</div></div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">"It's Not Compost…Yet"</div><div class="sec-num">04 / 08</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Set accurate expectations. Prevents buyer disappointment and builds credibility through honesty.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Headline</div><div class="example-hl">Food Grounds aren't compost. They're what you add to compost.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Supporting Copy</div><div class="sec-row-content">No machine makes compost — that takes soil, time, and microbes. What Mill makes is a dry, shelf-stable material that breaks down faster than raw scraps when added to soil or a compost pile. Think of it as a head start.</div></div>
+  <div class="flow-note">Important honesty section. Builds trust by setting correct expectations rather than overselling.</div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">How to Use Your Food Grounds</div><div class="sec-num">05 / 08</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Show versatility — the centerpiece of this page. Grounds have multiple meaningful uses, not just one.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">6 use-case cards with lifestyle imagery:<br><em>Garden soil mix · Home compost pile · Backyard chicken feed · Curbside compost bin · Local pickup service · Mill Pickups</em> (send grounds to farms). Each links to a how-to.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Media</div><div class="media-note">Lifestyle imagery for each use case — hands in soil, chickens eating, community garden. Warm, nature-forward.</div></div>
+  <div class="flow-note">Main value of the page. Show that the output isn't a single-use thing — it unlocks multiple outcomes.</div>
+</div>
+
+<div class="sec-block is-cta">
+  <div class="sec-header"><div class="sec-name">Mid-Page CTA</div><div class="sec-num">—</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Capture visitors convinced by the output alone.</div></div>
+  <div class="sec-row"><div class="sec-row-label">CTA</div><div class="sec-row-content"><em>Shop Mill</em> → Configurator + "Starting at $999"</div></div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">The Loop Story</div><div class="sec-num">06 / 08</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Emotional sustainability narrative. Visitors who came for the "how" now get the "purpose."</div></div>
+  <div class="sec-row"><div class="sec-row-label">Headline</div><div class="example-hl">Food scraps → grounds → soil → food. The loop closes.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Supporting Copy</div><div class="sec-row-content">Mill owners have kept 18M+ lbs of food out of landfills. That food goes back into soil on local farms, where it grows new food. Less methane, less waste, more food.</div></div>
+  <div class="flow-note">The emotional "why" layer. This is the permission slip — buying Mill isn't just convenient, it matters.</div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Community Impact</div><div class="sec-num">07 / 08</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Make the sustainability story tangible and local, not abstract. Real farms, real communities.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">Highlight the Mill Pickups program. Customer stories or partner farm spotlights.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Media</div><div class="media-note">Real photography — farms, community gardens, people using grounds. Authentic, not stock.</div></div>
+</div>
+
+<div class="sec-block is-cta">
+  <div class="sec-header"><div class="sec-name">Closing CTA</div><div class="sec-num">08 / 08</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Convert or route back. Don't strand visitors on an informational page.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Headline</div><div class="example-hl">Turn tonight's scraps into something your garden can use.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Primary CTA</div><div class="sec-row-content"><em>Shop Mill</em> → Configurator</div></div>
+  <div class="sec-row"><div class="sec-row-label">Secondary CTA</div><div class="sec-row-content"><em>See the Mill Food Recycler</em> → PDP</div></div>
+</div>
+
+</div></div><!-- /food-grounds -->
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- PDP -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="page-content" id="pdp">
+
+<div class="page-header">
+  <div class="page-badge">05 · High-Intent / Evaluation</div>
+  <h1 class="page-title">Product Detail Page</h1>
+  <p class="page-meta">High-intent visitors evaluating the product. Arrived from nav, Google product search, or routed from homepage/lander. Deep product proof, objection demolition, close the sale.</p>
+</div>
+
+<div class="sections-wrap">
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">PDP Hero</div><div class="sec-num">01 / 14</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Anchor value + enable action immediately. High-intent visitors don't want to scroll to find the price.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Headline</div><div class="example-hl">The kitchen appliance that replaces your trash routine.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Supporting Copy</div><div class="sec-row-content">Mill dries and grinds food scraps overnight — meat, bones, dairy, all of it. No odor, no flies, no hauling bags to the curb.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">Autoplay video in kitchen. Price: "Starting at $999." CTA: <em>Order now.</em> Star rating: ★ 4.83 / 2,976 reviews.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Media</div><div class="media-note">Autoplay lifestyle video — Mill in a kitchen. Price and CTA visible above the fold.</div></div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Sticky Sub-Nav</div><div class="sec-num">—</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Keep buyer oriented + always-on CTA. Long PDP needs wayfinding. Sticky CTA ensures conversion is one click away at all times.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">Persistent bar: Mill Food Recycler · Food Grounds · What goes in · Tech · Testimonials · Specs · <em>Order now</em></div></div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Benefits Carousel</div><div class="sec-num">02 / 14</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Quick value scan. First section after hero answers "why this product?" with scannable, card-based proof.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Headline</div><div class="example-hl">Why 3,000+ households switched to Mill.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">5 scrollable cards: <em>Takes almost anything · No odor, ever · Runs itself overnight · Creates garden-ready grounds · Built to last 10 years</em></div></div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Engineering Deep-Dive</div><div class="sec-num">03 / 14</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Build confidence in build quality + tech. This is the "under the hood" tour that justifies the price. PDP is the right place for this depth.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Headline</div><div class="example-hl">What's inside: 288 lbs of force, zero odor, zero noise.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">Interactive accordion with 9 components: industrial augers, ceramic bucket, smart lock, LED display, adaptive sensors, coconut-shell carbon filter, mass system, powertrain, steel enclosure. Each with image + description.</div></div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Odor Elimination Feature</div><div class="sec-num">04 / 14</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Kill the #1 concern. Odor gets its own section with video proof — don't bury it in a list.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Headline</div><div class="example-hl">Coconut-shell carbon filter. 99.9% of odors gone.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">Video of carbon filter airflow. Stats: 99.9% odor removal · Replacement once a year · Also filters dust & pollen from kitchen air.</div></div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Smart Automation Feature</div><div class="sec-num">05 / 14</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Kill "is it complicated?" fear. Second most common concern.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Headline</div><div class="example-hl">No buttons. No cycles. It just runs when you're asleep.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">Smart sensors detect food levels and run automatically. Uses less energy than a night light. 41 dB — quieter than your fridge.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Media</div><div class="media-note">Full-bleed atmospheric night video. Cinematic — makes it feel effortless.</div></div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Capacity & Volume Feature</div><div class="sec-num">06 / 14</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Prove it's practical for real families. Not just a demo — this works for daily life.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Headline</div><div class="example-hl">80% smaller. Empty it once a month, not twice a week.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">Before/after volume comparison visual. 6.5L bucket holds 3–4 weeks of scraps because Mill shrinks everything by 80%. Meat, bones, dairy, peels — all of it.</div></div>
+</div>
+
+<div class="sec-block is-cta">
+  <div class="sec-header"><div class="sec-name">Mid-Page CTA — Color Selector</div><div class="sec-num">—</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Functional + aspirational. Choose your color and imagine it in your kitchen. Natural mid-page conversion point.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">Color selector with lifestyle gallery (Black, White, Stainless Steel). "Made to match your style."</div></div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Food Grounds / Resource Loop</div><div class="sec-num">07 / 14</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Flip the value prop from negative (less trash) to positive (a resource you create). Major differentiator.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Headline</div><div class="example-hl">What comes out: dry, nutrient-rich Food Grounds.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">3 cards: <em>Garden · Chickens · Community.</em> Each with imagery + short description + link to Food Grounds page.</div></div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">What Goes In</div><div class="sec-num">08 / 14</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Kill "can I actually put my food in this?" doubt. Specificity builds confidence.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Headline</div><div class="example-hl">Meat, bones, dairy, pits — everything but the packaging.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">Icon grid: Fruits & veggies · Meat & fish · Plate scrapings · Dairy & eggs · Pits & seeds · Corn cobs & fibrous food.</div></div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Attention to Details</div><div class="sec-num">09 / 14</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Reinforce premium quality. After the technical proof, zoom out to overall design sophistication.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">Carousel: Modern design · Durable construction (handcrafted in N. America) · Premium fit & finish (pedal, LEDs, interface).</div></div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Testimonials</div><div class="sec-num">10 / 14</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Emotional social proof from real owners. Video testimonials are the highest-trust form. Placed after product proof to confirm everything they've just learned.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Headline</div><div class="example-hl">Real owners. Real kitchens. Hear why they switched.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">Customer video cards (Jesse/Devon/Alex, Olivia/Jake, Shreya/Akshai) with play buttons. Focus on specific before/after — what changed in their routine.</div></div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Mill vs. The Rest</div><div class="sec-num">11 / 14</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Win the comparison shopper. Control the narrative — they're already comparing in their head.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">Side-by-side table: Mill ✓ vs. The Rest ✗ on: 3–4 weeks to fill, 80% shrinkage, 12-month filter, automatic, impact tracking.</div></div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Tech Specs</div><div class="sec-num">12 / 14</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Satisfy the detail-oriented buyer. Essential for considered purchases at this price point.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">Full spec table: performance (1.4 lbs in 2.5 hrs), sound (41 dB), dimensions, colors, Wi-Fi, app, voltage. Dimension diagrams. "In the Box" list.</div></div>
+</div>
+
+<div class="sec-block is-cta">
+  <div class="sec-header"><div class="sec-name">Conversion CTA</div><div class="sec-num">13 / 14</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">The primary close. After 12 sections of justification, price and commitment feel earned.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">Full-width lifestyle background. Product card: "Mill Food Recycler" + "Buy, finance, or rent" + <em>Order now.</em> Trust badges: 90-day money back · Free shipping · 3-year warranty.</div></div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Customer Reviews</div><div class="sec-num">14 / 14</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">The last section for the "I need to read 20 more reviews" buyer. Full review browsing for final validation.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">Full review feed with star distribution, verified badges, timestamps.</div></div>
+</div>
+
+</div></div><!-- /pdp -->
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- CONFIGURATOR -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="page-content" id="configurator">
+
+<div class="page-header">
+  <div class="page-badge">06 · Highest Intent / Purchase</div>
+  <h1 class="page-title">Configurator</h1>
+  <p class="page-meta">Highest-intent visitors — clicked "Order now" or "Shop Mill" from any page. Already convinced. Minimize friction, close the sale, reassure post-decision. No re-selling.</p>
+</div>
+
+<div class="sections-wrap">
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Trust Banner</div><div class="sec-num">01 / 13</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Constant reassurance. Persistent trust signals eliminate risk anxiety throughout the configuration process.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">Fixed top bar: "90-day money back · 3-year warranty · Free shipping"</div></div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Product Gallery</div><div class="sec-num">02 / 13</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Visual confirmation. The buyer needs to see exactly what they're getting. Sticky on desktop — stays visible while they configure.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">Sticky image gallery (5–6 angles per color) with thumbnail strip. Gallery swaps when color is selected.</div></div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Rating + Title</div><div class="sec-num">03 / 13</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Anchor trust + identity. Review link gives anxious buyers an escape valve to read reviews without leaving.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">★ 4.80 / 5 · 3,041 reviews (linked). "Mill Food Recycler" title + one-line description.</div></div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Pricing Display</div><div class="sec-num">04 / 13</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Clear price anchoring. No surprises. Rent option lowers perceived barrier.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">"From $999" + "Or rent for $35/mo" link. Dynamic price updates when color changes.</div></div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Quick Benefits Grid</div><div class="sec-num">05 / 13</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">At-a-glance value reminder — not re-selling. These are reminders, not education. Keep them small.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">6 compact icon + label pairs: <em>Zero kitchen smells · Runs automatically · Reduces waste · Empty once a month · Great for gardens · Whisper quiet</em></div></div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Color Selector</div><div class="sec-num">06 / 13</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">The main configuration decision. Color is the only real choice — keep it simple.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">3 swatches (White, Black, Stainless Steel) with dynamic color name, price update, and gallery swap. Shipping estimate: "Ships in 1–3 business days."</div></div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Trust Badges</div><div class="sec-num">07 / 13</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Final risk elimination directly above the CTA. Reduces last-second hesitation.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">3-column row: 90-day money back guarantee · 3-year warranty · Free shipping & returns. Each with icon.</div></div>
+</div>
+
+<div class="sec-block is-cta">
+  <div class="sec-header"><div class="sec-name">Add to Cart</div><div class="sec-num">08 / 13</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">THE conversion moment. The single most important element on the page. Nothing should compete with it.</div></div>
+  <div class="sec-row"><div class="sec-row-label">CTA</div><div class="sec-row-content"><em>Add to Cart</em> — large, full-width green button. Below: "Financing from $83.25/mo with Affirm."</div></div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Pre-Purchase FAQ</div><div class="sec-num">09 / 13</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Kill the final 3 objections. Only purchase-specific questions — product questions belong on the PDP.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">Exactly 3 questions: <em>"What's included?" · "Will it fit in my kitchen?" · "What is the return policy?"</em> These cover the most common cart-abandonment reasons.</div></div>
+  <div class="flow-note">Only purchase-specific questions. These three address the top cart-abandonment reasons at this price point.</div>
+</div>
+
+<div class="sec-block" style="background:#fff8ed;border-color:#f5dcaa">
+  <div class="sec-header"><div class="sec-name">Below-the-Fold Strategy</div><div class="sec-num">—</div></div>
+  <div class="sec-row"><div class="sec-row-label">Note</div><div class="sec-row-content">The current live configurator has 16 sections below the fold — essentially a second PDP. This is a CRO anti-pattern. Below the fold should include <em>only</em> conversion-supporting content: press logos, customer reviews, and a condensed comparison. Cut everything that duplicates the PDP (odor deep-dive, capacity, automation, tech specs, food library, etc.).</div></div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Press Logos</div><div class="sec-num">10 / 13</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Lightweight trust signal. Non-intrusive. Helps direct-traffic buyers who skipped the PDP.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">"As Seen In" — WIRED, Fast Company, TIME, WSJ, Food & Wine.</div></div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Customer Reviews</div><div class="sec-num">11 / 13</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Buyers who scroll past "Add to Cart" are not yet convinced. Reviews are the #1 below-fold conversion driver.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">Yotpo review feed — star breakdown, verified badges, timestamps. Full browsable feed.</div></div>
+</div>
+
+<div class="sec-block">
+  <div class="sec-header"><div class="sec-name">Mill vs. The Rest</div><div class="sec-num">12 / 13</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">Quick comparison for buyers still mentally comparing. Condensed 3-row version, not the full PDP table.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Content</div><div class="sec-row-content">Simplified: Mill ✓ vs. The Rest ✗. 3 rows max — volume reduction, odor, automation.</div></div>
+</div>
+
+<div class="sec-block is-cta">
+  <div class="sec-header"><div class="sec-name">Closing CTA</div><div class="sec-num">13 / 13</div></div>
+  <div class="sec-row"><div class="sec-row-label">Purpose</div><div class="sec-row-content">For buyers who scrolled the full page. Scroll back to the configurator.</div></div>
+  <div class="sec-row"><div class="sec-row-label">Headline</div><div class="example-hl">Pick your color. We'll ship it free.</div></div>
+  <div class="sec-row"><div class="sec-row-label">CTA</div><div class="sec-row-content"><em>Configure Your Mill</em> — scrolls back to the top configurator panel.</div></div>
+</div>
+
+<div class="sec-block" style="background:#fff8ed;border-color:#f5dcaa">
+  <div class="sec-header"><div class="sec-name">Cart State (Post-Add)</div><div class="sec-num">—</div></div>
+  <div class="sec-row"><div class="sec-row-label">Note</div><div class="sec-row-content">After "Add to Cart," the right panel transitions to a cart summary:</div></div>
+  <div class="sec-row"><div class="sec-row-label">Cart Elements</div><div class="sec-row-content">
+    <em>Cart header</em> — "Your cart"<br>
+    <em>Line item</em> — Product thumbnail, "Mill Food Recycler," selected color, Qty: 1, price<br>
+    <em>Upsell</em> — "Protect your Mill for 5 years — Extended Coverage" — Add for $199<br>
+    <em>Summary</em> — Subtotal, shipping (Free), estimated total<br>
+    <em>Checkout CTA</em> — Full-width button: "Proceed to Checkout"
+  </div></div>
+</div>
+
+</div></div><!-- /configurator -->
+
+<script>
+// Hamburger toggle
+const toggle = document.getElementById('flowToggle');
+const dropdown = document.getElementById('flowDropdown');
+toggle.addEventListener('click', (e) => {
+  e.stopPropagation();
+  dropdown.classList.toggle('open');
+});
+document.addEventListener('click', () => dropdown.classList.remove('open'));
+dropdown.addEventListener('click', (e) => e.stopPropagation());
+
+// Flow tab switching
+document.querySelectorAll('.flow-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.flow-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    const target = document.getElementById(tab.dataset.page);
+    if (target) target.classList.add('active');
+    dropdown.classList.remove('open');
+  });
+});
+</script>
+</body>
+</html>
