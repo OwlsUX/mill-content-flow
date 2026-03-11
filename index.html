@@ -73,6 +73,21 @@ body{font-family:'Inter',sans-serif;background:#f7f5f0;color:#1a1a1a}
 
 /* flow note */
 .flow-note{font-size:12px;color:#999;line-height:1.55;padding-top:12px;border-top:1px solid #f0ede8;margin-top:16px}
+
+/* ── OVERVIEW MATRIX ── */
+.overview-wrap{max-width:1400px;margin:0 auto;padding:0 24px}
+.matrix-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid #e8e4de;border-radius:10px;background:#fff}
+.matrix{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed;min-width:1100px}
+.matrix th,.matrix td{border:1px solid #f0ede8;padding:12px 14px;vertical-align:top;text-align:left}
+.matrix thead th{position:sticky;top:0;background:#faf8f5;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#1a5e3a;white-space:nowrap;z-index:2;padding:10px 14px}
+.matrix thead th:first-child{width:36px;text-align:center;color:#bbb}
+.matrix th.col-page{width:calc((100% - 36px) / 6)}
+.matrix tbody td:first-child{text-align:center;font-size:11px;font-weight:700;color:#ccc;background:#faf8f5;width:36px}
+.matrix .m-name{font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#1a5e3a;margin-bottom:3px;line-height:1.3}
+.matrix .m-hl{font-size:13px;font-weight:700;color:#1a1a1a;line-height:1.35;letter-spacing:-.01em}
+.matrix .m-desc{font-size:11px;color:#aaa;line-height:1.4;font-style:italic;margin-top:2px}
+.matrix .m-cta{background:#f8fcf9}
+.matrix .m-empty{color:#ddd;font-style:italic;font-size:11px}
 </style>
 </head>
 <body>
@@ -96,6 +111,8 @@ body{font-family:'Inter',sans-serif;background:#f7f5f0;color:#1a1a1a}
       </button>
       <div class="flow-dropdown" id="flowDropdown">
         <div class="flow-dropdown-label">Content Flow</div>
+        <button class="flow-tab" data-page="overview">Overview Matrix</button>
+        <hr style="border:none;border-top:1px solid #eee;margin:4px 0">
         <button class="flow-tab active" data-page="lander">01 · Lander</button>
         <button class="flow-tab" data-page="homepage">02 · Homepage</button>
         <button class="flow-tab" data-page="how-it-works">03 · How It Works</button>
@@ -106,6 +123,200 @@ body{font-family:'Inter',sans-serif;background:#f7f5f0;color:#1a1a1a}
     </div>
   </div>
 </nav>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- OVERVIEW MATRIX -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="page-content" id="overview">
+
+<div class="page-header">
+  <div class="page-badge">All Pages</div>
+  <h1 class="page-title">Section &amp; Headline Matrix</h1>
+  <p class="page-meta">Every section across all 6 pages, side by side. Scan horizontally to compare how each page handles the same job at each position in the scroll.</p>
+</div>
+
+<div class="overview-wrap">
+<div class="matrix-scroll">
+<table class="matrix">
+<thead>
+<tr>
+  <th>#</th>
+  <th class="col-page">Lander<br><span style="font-weight:400;font-size:9px;letter-spacing:0;text-transform:none;color:#999">Paid / Meta</span></th>
+  <th class="col-page">Homepage<br><span style="font-weight:400;font-size:9px;letter-spacing:0;text-transform:none;color:#999">Organic / Brand</span></th>
+  <th class="col-page">How It Works<br><span style="font-weight:400;font-size:9px;letter-spacing:0;text-transform:none;color:#999">Mid-Funnel</span></th>
+  <th class="col-page">Food Grounds<br><span style="font-weight:400;font-size:9px;letter-spacing:0;text-transform:none;color:#999">Education</span></th>
+  <th class="col-page">PDP<br><span style="font-weight:400;font-size:9px;letter-spacing:0;text-transform:none;color:#999">High-Intent</span></th>
+  <th class="col-page">Configurator<br><span style="font-weight:400;font-size:9px;letter-spacing:0;text-transform:none;color:#999">Purchase</span></th>
+</tr>
+</thead>
+<tbody>
+
+<tr>
+  <td>01</td>
+  <td><div class="m-name">Hero</div><div class="m-hl">Toss in tonight's scraps. Wake up to clean grounds.</div></td>
+  <td><div class="m-name">Hero</div><div class="m-hl">Your food deserves better than a landfill.</div></td>
+  <td><div class="m-name">Hero</div><div class="m-hl">$1,800 of groceries go in your trash every year. Mill puts them back to work.</div></td>
+  <td><div class="m-name">Hero</div><div class="m-hl">Last night's dinner scraps. This morning's garden food.</div></td>
+  <td><div class="m-name">PDP Hero</div><div class="m-hl">The kitchen appliance that replaces your trash routine.</div></td>
+  <td><div class="m-name">Trust Banner</div><div class="m-desc">90-day money back · 3-yr warranty · Free shipping</div></td>
+</tr>
+
+<tr>
+  <td>02</td>
+  <td><div class="m-name">Problem Agitation</div><div class="m-hl">You're throwing away $1,800 a year in groceries.</div></td>
+  <td><div class="m-name">Press Social Proof</div><div class="m-desc">WIRED · Fast Company · TIME · WSJ · Food &amp; Wine</div></td>
+  <td><div class="m-name">3-Step Process</div><div class="m-desc">Toss it in → Mill works overnight → Use your grounds</div></td>
+  <td><div class="m-name">The Transformation</div><div class="m-desc">3-step timeline: today → next day → next week</div></td>
+  <td><div class="m-name">Sticky Sub-Nav</div><div class="m-desc">Persistent wayfinding + always-on Order Now CTA</div></td>
+  <td><div class="m-name">Product Gallery</div><div class="m-desc">Sticky image gallery, 5–6 angles per color</div></td>
+</tr>
+
+<tr>
+  <td>03</td>
+  <td><div class="m-name">Product Reveal</div><div class="m-hl">A kitchen appliance that turns food waste into garden-ready grounds.</div></td>
+  <td><div class="m-name">Problem Agitation</div><div class="m-hl">$1,800 a year. Rotting in your trash can.</div></td>
+  <td><div class="m-name">What Goes In</div><div class="m-desc">Visual grid: fruits, meat, dairy, bones, pits, scrapings</div></td>
+  <td><div class="m-name">Properties &amp; Benefits</div><div class="m-desc">No pests · Compact · Ready in hours · Store for months</div></td>
+  <td><div class="m-name">Benefits Carousel</div><div class="m-hl">Why 3,000+ households switched to Mill.</div></td>
+  <td><div class="m-name">Rating + Title</div><div class="m-desc">★ 4.80 · 3,041 reviews · Mill Food Recycler</div></td>
+</tr>
+
+<tr>
+  <td>04</td>
+  <td><div class="m-name">How It Works</div><div class="m-hl">How Mill works: toss, sleep, done.</div></td>
+  <td><div class="m-name">Product Intro</div><div class="m-hl">An automatic food recycler for your kitchen counter.</div></td>
+  <td><div class="m-name">The Technology</div><div class="m-desc">288 lbs force · 99.9% odor · 41 dB · Smart sensors</div></td>
+  <td><div class="m-name">"Not Compost…Yet"</div><div class="m-hl">Food Grounds aren't compost. They're what you add to compost.</div></td>
+  <td><div class="m-name">Engineering Deep-Dive</div><div class="m-hl">What's inside: 288 lbs of force, zero odor, zero noise.</div></td>
+  <td><div class="m-name">Pricing Display</div><div class="m-desc">From $999 · Or rent for $35/mo</div></td>
+</tr>
+
+<tr>
+  <td>05</td>
+  <td><div class="m-name">Benefits Deep-Dive</div><div class="m-hl">No smell. No maintenance. No compromise.</div></td>
+  <td><div class="m-name">How It Works</div><div class="m-hl">Three steps. No thinking required.</div></td>
+  <td><div class="m-name">The Output — Food Grounds</div><div class="m-desc">3 use-case cards: Garden · Chickens · Community</div></td>
+  <td><div class="m-name">How to Use Grounds</div><div class="m-desc">6 use-case cards: garden, compost, chickens, curbside, local, Mill Pickups</div></td>
+  <td><div class="m-name">Odor Elimination</div><div class="m-hl">Coconut-shell carbon filter. 99.9% of odors gone.</div></td>
+  <td><div class="m-name">Quick Benefits Grid</div><div class="m-desc">6 icons: Zero smell · Automatic · Reduces waste · Monthly empty · Gardens · Quiet</div></td>
+</tr>
+
+<tr class="m-cta">
+  <td>06</td>
+  <td class="m-cta"><div class="m-name">Mid-Page CTA</div><div class="m-desc">Shop Mill — from $33/mo</div></td>
+  <td><div class="m-name">Durability &amp; Heritage</div><div class="m-hl">Built by the team behind Nest. Made to last 10 years.</div></td>
+  <td class="m-cta"><div class="m-name">Mid-Page CTA</div><div class="m-desc">Shop Mill + Starting at $999</div></td>
+  <td class="m-cta"><div class="m-name">Mid-Page CTA</div><div class="m-desc">Shop Mill → Configurator</div></td>
+  <td><div class="m-name">Smart Automation</div><div class="m-hl">No buttons. No cycles. It just runs when you're asleep.</div></td>
+  <td><div class="m-name">Color Selector</div><div class="m-desc">White · Black · Stainless Steel + gallery swap</div></td>
+</tr>
+
+<tr>
+  <td>07</td>
+  <td><div class="m-name">Social Proof</div><div class="m-hl">3,041 verified buyers. 4.8 stars.</div></td>
+  <td class="m-cta"><div class="m-name">Mid-Page CTA</div><div class="m-desc">Configure Your Mill + starting price</div></td>
+  <td><div class="m-name">Social Proof</div><div class="m-desc">Press logos + 4.8 stars + pull-quotes</div></td>
+  <td><div class="m-name">The Loop Story</div><div class="m-hl">Food scraps → grounds → soil → food. The loop closes.</div></td>
+  <td><div class="m-name">Capacity &amp; Volume</div><div class="m-hl">80% smaller. Empty it once a month, not twice a week.</div></td>
+  <td><div class="m-name">Trust Badges</div><div class="m-desc">90-day guarantee · 3-yr warranty · Free shipping</div></td>
+</tr>
+
+<tr>
+  <td>08</td>
+  <td><div class="m-name">Lifestyle Gallery</div><div class="m-hl">Three finishes. Replaces the bin under your counter.</div></td>
+  <td><div class="m-name">Social Proof Mosaic</div><div class="m-desc">Videos, quotes, 4.8 stars, JLD endorsement, FC award</div></td>
+  <td><div class="m-name">Durability &amp; Heritage</div><div class="m-hl">Handcrafted in North America. 3-year warranty.</div></td>
+  <td><div class="m-name">Community Impact</div><div class="m-desc">Mill Pickups program · Partner farm spotlights</div></td>
+  <td class="m-cta"><div class="m-name">Mid-Page CTA</div><div class="m-desc">Color selector + lifestyle gallery</div></td>
+  <td class="m-cta"><div class="m-name">Add to Cart</div><div class="m-desc">Full-width green button · Affirm financing</div></td>
+</tr>
+
+<tr>
+  <td>09</td>
+  <td><div class="m-name">Comparison Table</div><div class="m-hl">Mill vs. composting vs. doing nothing.</div></td>
+  <td><div class="m-name">Food Grounds / Impact</div><div class="m-desc">3 cards: Garden · Chickens · Community</div></td>
+  <td class="m-cta"><div class="m-name">Closing CTA</div><div class="m-desc">Shop Mill → Configurator · See full details → PDP</div></td>
+  <td class="m-cta"><div class="m-name">Closing CTA</div><div class="m-hl">Turn tonight's scraps into something your garden can use.</div></td>
+  <td><div class="m-name">Food Grounds</div><div class="m-hl">What comes out: dry, nutrient-rich Food Grounds.</div></td>
+  <td><div class="m-name">Pre-Purchase FAQ</div><div class="m-desc">What's included? · Will it fit? · Return policy?</div></td>
+</tr>
+
+<tr>
+  <td>10</td>
+  <td class="m-cta"><div class="m-name">Mid-Page CTA</div><div class="m-desc">Shop Mill — from $33/mo · $999 outright · Affirm</div></td>
+  <td><div class="m-name">Lifestyle / Color Gallery</div><div class="m-hl">Three finishes. Fits where your trash can used to.</div></td>
+  <td class="m-empty">—</td>
+  <td class="m-empty">—</td>
+  <td><div class="m-name">What Goes In</div><div class="m-hl">Meat, bones, dairy, pits — everything but the packaging.</div></td>
+  <td><div class="m-name">Press Logos</div><div class="m-desc">WIRED · Fast Company · TIME · WSJ · Food &amp; Wine</div></td>
+</tr>
+
+<tr>
+  <td>11</td>
+  <td><div class="m-name">Sustainability / Impact</div><div class="m-hl">18,000,000 lbs of food kept out of landfills.</div></td>
+  <td><div class="m-name">Product CTA Card</div><div class="m-desc">Product card + price + trust badges + Order Now</div></td>
+  <td class="m-empty">—</td>
+  <td class="m-empty">—</td>
+  <td><div class="m-name">Attention to Details</div><div class="m-desc">Modern design · Durable construction · Premium finish</div></td>
+  <td><div class="m-name">Customer Reviews</div><div class="m-desc">Full review feed — stars, verified badges, timestamps</div></td>
+</tr>
+
+<tr>
+  <td>12</td>
+  <td><div class="m-name">Pricing &amp; Options</div><div class="m-hl">Pick the plan that works for you.</div></td>
+  <td><div class="m-name">Customer Reviews</div><div class="m-desc">Full review feed — stars, verified badges, timestamps</div></td>
+  <td class="m-empty">—</td>
+  <td class="m-empty">—</td>
+  <td><div class="m-name">Testimonials</div><div class="m-hl">Real owners. Real kitchens. Hear why they switched.</div></td>
+  <td><div class="m-name">Mill vs. The Rest</div><div class="m-desc">Condensed 3-row comparison</div></td>
+</tr>
+
+<tr>
+  <td>13</td>
+  <td><div class="m-name">FAQ</div><div class="m-desc">Smell · Noise · What can't go in · Electricity · Grounds · Returns</div></td>
+  <td><div class="m-name">Blog / Latest Stories</div><div class="m-desc">3 recent blog post cards</div></td>
+  <td class="m-empty">—</td>
+  <td class="m-empty">—</td>
+  <td><div class="m-name">Mill vs. The Rest</div><div class="m-desc">Mill ✓ vs. The Rest ✗ comparison table</div></td>
+  <td class="m-cta"><div class="m-name">Closing CTA</div><div class="m-hl">Pick your color. We'll ship it free.</div></td>
+</tr>
+
+<tr>
+  <td>14</td>
+  <td class="m-cta"><div class="m-name">Closing CTA</div><div class="m-hl">Recycle your food scraps starting tonight.</div></td>
+  <td><div class="m-name">Impact Statement</div><div class="m-hl">Mill owners have kept 18,000,000 lbs of food out of landfills.</div></td>
+  <td class="m-empty">—</td>
+  <td class="m-empty">—</td>
+  <td><div class="m-name">Tech Specs</div><div class="m-desc">Full spec table + dimensions + In the Box</div></td>
+  <td class="m-empty">—</td>
+</tr>
+
+<tr>
+  <td>15</td>
+  <td class="m-empty">—</td>
+  <td><div class="m-name">Newsletter + Footer</div><div class="m-desc">Email signup + full sitemap footer</div></td>
+  <td class="m-empty">—</td>
+  <td class="m-empty">—</td>
+  <td class="m-cta"><div class="m-name">Conversion CTA</div><div class="m-desc">Full-width lifestyle bg + Order Now + trust badges</div></td>
+  <td class="m-empty">—</td>
+</tr>
+
+<tr>
+  <td>16</td>
+  <td class="m-empty">—</td>
+  <td class="m-empty">—</td>
+  <td class="m-empty">—</td>
+  <td class="m-empty">—</td>
+  <td><div class="m-name">Customer Reviews</div><div class="m-desc">Full review feed — final validation</div></td>
+  <td class="m-empty">—</td>
+</tr>
+
+</tbody>
+</table>
+</div>
+</div>
+
+</div><!-- /overview -->
 
 <!-- ═══════════════════════════════════════════ -->
 <!-- LANDER -->
